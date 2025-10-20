@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AHC Youth Unemployment Survey • Dashboard</title>
+
+  <!-- Chart.js + DataLabels plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0" defer></script>
+
+  <!-- Fonts (system stack keeps it lightweight) -->
+  <style>
+    :root{
+      /* AHC-inspired palette (adjust if you get exact brand codes) */
+      --ahc-green: #0f7c66;     /* primary */
+      --ahc-green-600:#0b6a57;
+      --ahc-gold:  #f4b000;     /* accent */
+      --ahc-teal:  #14b8a6;     /* accent 2 */
+      --ahc-ink:   #14222b;     /* headings */
+      --ahc-body:  #334155;     /* body text */
+      --ahc-card:  #ffffff;     /* cards */
+      --ahc-bg:    #f6f8fa;     /* page background */
+      --ahc-soft:  #e6eef0;     /* soft borders */
+      --ahc-warn:  #e04f5f;     /* alerts */
+      --radius-xl: 20px;
+      --radius-md: 14px;
+      --shadow-xl: 0 18px 50px rgba(16, 40, 56, 0.12);
+      --shadow-md: 0 10px 24px rgba(16, 40, 56, 0.10);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ahc-body);
+      background: radial-gradient(1200px 600px at 80% -100px, rgba(20,184,166,0.10), transparent 60%),
+                  radial-gradient(1200px 600px at -20% -200px, rgba(15,124,102,0.10), transparent 60%),
+                  var(--ahc-bg);
+    }
+    .container{max-width:1200px; margin:0 auto; padding:32px 20px 80px}
+    .navbar{
+      display:flex; align-items:center; justify-content:space-between;
+      background:linear-gradient(180deg, #0f7c66 0%, #0b6a57 100%);
+      color:#fff; padding:16px 22px; border-radius:16px; box-shadow:var(--shadow-md);
+    }
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
+    .brand .dot{width:12px; height:12px; border-radius:999px; background:var(--ahc-gold); box-shadow:0 0 0 4px rgba(244,176,0,.25)}
+    .brand .title{font-size:18px}
+    .pill{
+      background:rgba(255,255,255,.15); color:#fff; padding:8px 12px; border-radius:999px; font-size:13px; border:1px solid rgba(255,255,255,.25)
+    }
+
+    .hero{
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; margin:28px 0 32px
+    }
+    .hero-card{
+      background:linear-gradient(135deg, #ffffff 0%, #f9fbfb 70%);
+      border:1px solid var(--ahc-soft); border-radius:var(--radius-xl); box-shadow:var(--shadow-xl);
+      padding:40px;
+    }
+    .hero h1{margin:0 0 10px; font-size:34px; color:var(--ahc-ink); letter-spacing:.3px}
+    .hero p.lead{margin:0; font-size:16px; opacity:.9}
+    .hero-stats{
+      display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:26px
+    }
+    .stat{
+      background: #fff; border:1px solid var(--ahc-soft);
+      padding:18px; border-radius:14px; box-shadow:var(--shadow-md);
+    }
+    .stat .num{font-weight:800; font-size:28px; color:var(--ahc-ink)}
+    .stat .lbl{font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:#4b5b66; margin-top:4px}
+
+    .grid{
+      display:grid; gap:22px; grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      background:var(--ahc-card); border:1px solid var(--ahc-soft);
+      border-radius:var(--radius-xl); box-shadow:var(--shadow-md);
+      padding:24px;
+    }
+    .span-12{grid-column: span 12}
+    .span-8{grid-column: span 8}
+    .span-7{grid-column: span 7}
+    .span-6{grid-column: span 6}
+    .span-5{grid-column: span 5}
+    .span-4{grid-column: span 4}
+    .card h2{
+      font-size:20px; color:var(--ahc-ink); margin:0 0 12px; border-bottom:2px solid var(--ahc-soft); padding-bottom:10px
+    }
+    .subhead{font-size:14px; color:#5a6b75}
+
+    .progress{
+      height:28px; background:#edf2f4; border-radius:999px; overflow:hidden; border:1px solid #e3eaed
+    }
+    .bar{height:100%; display:flex; align-items:center; padding-left:12px; color:#fff; font-weight:700}
+    .bar--green{background:linear-gradient(90deg, var(--ahc-green) 0%, var(--ahc-green-600) 100%)}
+    .bar--gold{background:linear-gradient(90deg, #ffd36a 0%, var(--ahc-gold) 80%)}
+    .insight{
+      background:linear-gradient(180deg, rgba(15,124,102,.06), rgba(15,124,102,.02));
+      border:1px solid var(--ahc-soft); border-left:4px solid var(--ahc-green); padding:16px 16px; border-radius:12px; margin-top:12px
+    }
+    .highlight{
+      background:linear-gradient(135deg, var(--ahc-green) 0%, var(--ahc-teal) 100%);
+      color:#fff; border-radius:16px; padding:18px 20px; box-shadow:var(--shadow-md)
+    }
+    .list{margin:0; padding-left:18px}
+    .list li{margin:8px 0}
+
+    canvas{width:100% !important; height:420px !important}
+    .tall canvas{height:520px !important}
+    .legend-note{font-size:12px; color:#6b7b86}
+
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr}
+      .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .span-8,.span-7,.span-6,.span-5,.span-4{grid-column:span 12}
+      canvas{height:360px !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar">
+      <div class="brand">
+        <div class="dot"></div>
+        <div class="title">Africa Health Collaborative • Insights</div>
+      </div>
+      <div class="pill">Youth Employment, Workforce & Entrepreneurship</div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Youth Unemployment Survey</h1>
+        <p class="lead">Understanding challenges and opportunities in Africa’s health employment landscape</p>
+        <div class="hero-stats">
+          <div class="stat"><div class="num">213</div><div class="lbl">Participants</div></div>
+          <div class="stat"><div class="num">65%</div><div class="lbl">Ages 18–25</div></div>
+          <div class="stat"><div class="num">12</div><div class="lbl">Countries</div></div>
+          <div class="stat"><div class="num">91%</div><div class="lbl">Current Students</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Geographic Distribution</h2>
+        <p class="subhead">Respondents by country</p>
+        <div><canvas id="countryChart"></canvas></div>
+      </div>
+    </section>
+
+    <!-- GRID SECTIONS -->
+    <section class="grid">
+      <!-- Institutions -->
+      <div class="card span-6">
+        <h2>Top Higher Education Institutions</h2>
+        <p class="subhead">Share of total respondents</p>
+
+        <div style="margin:16px 0">
+          <strong>KNUST</strong>
+          <div class="progress"><div class="bar bar--green" style="width:24%">24%</div></div>
+        </div>
+        <div style="margin:16px 0">
+          <strong>Ashesi University</strong>
+          <div class="progress"><div class="bar bar--green" style="width:19%">19%</div></div>
+        </div>
+        <div style="margin:16px 0">
+          <strong>Amref International University</strong>
+          <div class="progress"><div class="bar bar--gold" style="width:16%">16%</div></div>
+        </div>
+        <div style="margin:16px 0">
+          <strong>University of Toronto</strong>
+          <div class="progress"><div class="bar bar--gold" style="width:12%">12%</div></div>
+        </div>
+        <div style="margin:16px 0">
+          <strong>African Leadership University</strong>
+          <div class="progress"><div class="bar bar--green" style="width:11%">11%</div></div>
+        </div>
+      </div>
+
+      <!-- Employment -->
+      <div class="card span-6">
+        <h2>Current Employment Status</h2>
+        <div><canvas id="employmentChart"></canvas></div>
+        <div class="insight"><strong>Key insight:</strong> 55% are full-time students and 18% are actively seeking work, representing significant untapped potential.</div>
+      </div>
+
+      <!-- Skills -->
+      <div class="card span-7">
+        <h2>Desired Skills Development</h2>
+        <div><canvas id="skillsChart"></canvas></div>
+      </div>
+      <div class="card span-5 highlight">
+        <h2 style="border-bottom:0; margin-bottom:6px; color:#fff">Top Priority Skills</h2>
+        <ul class="list">
+          <li><strong>Critical thinking and problem solving</strong> — 50% of respondents</li>
+          <li><strong>Technical upskilling</strong> — essential for modern health systems</li>
+          <li><strong>Adaptability</strong> — thriving in evolving work environments</li>
+          <li><strong>Communication</strong> — vital for effective care delivery</li>
+        </ul>
+      </div>
+
+      <!-- Career aspirations -->
+      <div class="card span-12 tall">
+        <h2>Career Aspirations in Health</h2>
+        <div><canvas id="careerChart"></canvas></div>
+        <div class="insight"><strong>Top three:</strong> Public Health and Policy, Clinical Professions, Health Technology and Data</div>
+      </div>
+
+      <!-- Entrepreneurship -->
+      <div class="card span-12">
+        <h2>Entrepreneurial Spirit</h2>
+        <div class="grid" style="grid-template-columns:repeat(4,1fr); gap:14px">
+          <div class="stat"><div class="num">56%</div><div class="lbl">Have idea, need support</div></div>
+          <div class="stat"><div class="num">29%</div><div class="lbl">Maybe, want to learn</div></div>
+          <div class="stat"><div class="num">12%</div><div class="lbl">Already started</div></div>
+          <div class="stat"><div class="num">3%</div><div class="lbl">Not interested</div></div>
+        </div>
+        <div class="insight" style="margin-top:14px"><strong>97%</strong> show interest in entrepreneurship, but most lack practical launch support.</div>
+      </div>
+
+      <!-- Challenges (bigger) -->
+      <div class="card span-7 tall">
+        <h2>Biggest Job-Seeking Challenges</h2>
+        <div><canvas id="challengesChart"></canvas></div>
+        <div class="legend-note">Lack of networks nearly matches perceived lack of opportunities.</div>
+      </div>
+
+      <!-- Support Needed -->
+      <div class="card span-5">
+        <h2>What Youth Need Most</h2>
+        <p class="subhead">Priority support areas</p>
+        <div style="margin:12px 0">
+          <strong>Funding</strong>
+          <div class="progress"><div class="bar bar--gold" style="width:41%">110 responses</div></div>
+        </div>
+        <div style="margin:12px 0">
+          <strong>Networks</strong>
+          <div class="progress"><div class="bar bar--green" style="width:31%">84 responses</div></div>
+        </div>
+        <div style="margin:12px 0">
+          <strong>Training</strong>
+          <div class="progress"><div class="bar bar--green" style="width:21%">56 responses</div></div>
+        </div>
+        <div style="margin:12px 0">
+          <strong>Mentorship</strong>
+          <div class="progress"><div class="bar bar--gold" style="width:4%">10 responses</div></div>
+        </div>
+        <div class="highlight" style="margin-top:16px">
+          <h3 style="margin:0 0 8px; color:#fff; font-size:16px">Key themes</h3>
+          <ul class="list">
+            <li>Practical training and paid experience</li>
+            <li>Access to networks and mentors</li>
+            <li>Seed funding for prototypes and ventures</li>
+            <li>Inclusive employer pipelines</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Skills gaps (bigger) -->
+      <div class="card span-12 tall">
+        <h2>Top Skills Gaps in Health Systems</h2>
+        <div><canvas id="skillsGapChart"></canvas></div>
+        <div class="insight"><strong>Mental health workers emerged as the #1 priority</strong>, with strong calls for psychologists and counsellors in communities.</div>
+      </div>
+
+      <!-- System changes -->
+      <div class="card span-7">
+        <h2>What Needs to Change</h2>
+        <div><canvas id="changesChart"></canvas></div>
+      </div>
+      <div class="card span-5 highlight">
+        <h2 style="border-bottom:0; margin-bottom:6px; color:#fff">Critical Priorities</h2>
+        <ul class="list">
+          <li>Innovation and technology adoption</li>
+          <li>Job creation and youth-friendly hiring</li>
+          <li>Training and upskilling programs</li>
+          <li>Inclusive, equitable recruitment</li>
+          <li>Digital health infrastructure</li>
+        </ul>
+      </div>
+
+      <!-- Path forward -->
+      <div class="card span-12" style="background:linear-gradient(135deg,#0f7c66,#14b8a6); color:#fff">
+        <h2 style="border-bottom:0; color:#fff">The Path Forward</h2>
+        <ul class="list">
+          <li>Create transparent youth hiring pathways</li>
+          <li>Enable digitization, data stewardship and AI literacy</li>
+          <li>Invest in mentorship and paid practicums</li>
+          <li>Fund early venture prototyping</li>
+          <li>Give youth agency to lead transformation</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Shared colors from CSS variables
+    const ahc = getComputedStyle(document.documentElement);
+    const C = {
+      green: ahc.getPropertyValue('--ahc-green').trim(),
+      green600: ahc.getPropertyValue('--ahc-green-600').trim(),
+      gold: ahc.getPropertyValue('--ahc-gold').trim(),
+      teal: ahc.getPropertyValue('--ahc-teal').trim(),
+      warn: ahc.getPropertyValue('--ahc-warn').trim(),
+      ink:  ahc.getPropertyValue('--ahc-ink').trim()
+    };
+
+    // Register DataLabels plugin once
+    document.addEventListener('readystatechange', () => {
+      if (document.readyState === 'complete') {
+        Chart.register(ChartDataLabels);
+
+        // Country Distribution
+        new Chart(document.getElementById('countryChart').getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Ghana','Kenya','Rwanda','South Africa','Canada','Ethiopia','Uganda','Nigeria','Others'],
+            datasets: [{
+              label:'Participants',
+              data: [97,50,22,19,10,3,3,3,6],
+              backgroundColor: C.green,
+              borderColor: C.green600,
+              borderWidth: 2,
+              borderRadius: 8,
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              datalabels:{
+                color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'}, formatter:(v)=>v
+              },
+              tooltip:{enabled:true}
+            },
+            scales:{
+              x:{ grid:{display:false}},
+              y:{ beginAtZero:true, ticks:{ precision:0 }}
+            }
+          }
+        });
+
+        // Employment Status (doughnut with inside labels)
+        new Chart(document.getElementById('employmentChart').getContext('2d'), {
+          type:'doughnut',
+          data:{
+            labels:['Full-time Student','Unemployed & Seeking','Contract Employment','Permanently Employed','Self Employed','Not Looking'],
+            datasets:[{
+              data:[116,39,32,16,6,4],
+              backgroundColor:[C.green, C.warn, C.gold, C.teal, '#8ecae6', '#facc15'],
+              borderColor:'#ffffff',
+              borderWidth:2
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            cutout:'58%',
+            plugins:{
+              legend:{ position:'right' },
+              datalabels:{
+                color:'#0f172a', formatter:(v,ctx)=>{
+                  const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                  const pct = (v/total*100).toFixed(0);
+                  return pct + '%';
+                },
+                font:{weight:'700'}
+              }
+            }
+          }
+        });
+
+        // Skills (horizontal bar)
+        new Chart(document.getElementById('skillsChart').getContext('2d'), {
+          type:'bar',
+          data:{
+            labels:['Critical Thinking','Technical Skills','Adaptability','Communication','Confidence'],
+            datasets:[{
+              label:'Responses',
+              data:[105,43,22,18,15],
+              backgroundColor:C.teal,
+              borderColor:C.green600,
+              borderWidth:2,
+              borderRadius:8
+            }]
+          },
+          options:{
+            indexAxis:'y', responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} }
+            },
+            scales:{ x:{ beginAtZero:true } }
+          }
+        });
+
+        // Career aspirations
+        new Chart(document.getElementById('careerChart').getContext('2d'), {
+          type:'bar',
+          data:{
+            labels:['Public Health & Policy','Clinical Profession','Health Tech & Data','Allied Health','Admin & Management','Research & Academia','Entrepreneurship','Mental Health'],
+            datasets:[{
+              label:'Respondents',
+              data:[43,33,31,19,14,14,10,9],
+              backgroundColor:[C.green, '#2563eb', C.teal, '#a855f7', '#22c55e', C.warn, C.gold, '#06b6d4'],
+              borderWidth:0,
+              borderRadius:10
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              datalabels:{ color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'} }
+            },
+            scales:{ y:{ beginAtZero:true, ticks:{stepSize:5} }, x:{ grid:{display:false} } }
+          }
+        });
+
+        // Challenges (horizontal, bigger)
+        new Chart(document.getElementById('challengesChart').getContext('2d'), {
+          type:'bar',
+          data:{
+            labels:['No Job Opportunities','Lack of Networks','Lack of Experience','No Funding','Lack Skills/Training'],
+            datasets:[{
+              label:'Responses',
+              data:[97,96,72,60,39],
+              backgroundColor:C.warn,
+              borderColor:'#b91c1c',
+              borderWidth:2,
+              borderRadius:8
+            }]
+          },
+          options:{
+            indexAxis:'y', responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} }
+            },
+            scales:{ x:{ beginAtZero:true } }
+          }
+        });
+
+        // Skills Gap (horizontal, bigger)
+        new Chart(document.getElementById('skillsGapChart').getContext('2d'), {
+          type:'bar',
+          data:{
+            labels:['Specialized Doctors','Mental Health - Psychologists','Mental Health - Counsellors','Community Health Workers','Primary Care Doctors','IT / Digital Support','Health Information','Allied Health'],
+            datasets:[{
+              label:'Demand Level',
+              data:[79,77,77,63,61,59,54,51],
+              backgroundColor:C.green,
+              borderColor:C.green600,
+              borderWidth:2,
+              borderRadius:8
+            }]
+          },
+          options:{
+            indexAxis:'y', responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} }
+            },
+            scales:{ x:{ beginAtZero:true } }
+          }
+        });
+
+        // System changes (doughnut)
+        new Chart(document.getElementById('changesChart').getContext('2d'), {
+          type:'doughnut',
+          data:{
+            labels:['Innovation & Technology','Job Creation','Training & Skills','Funding Support','Inclusion & Equity','Other'],
+            datasets:[{
+              data:[50,34,29,7,7,25],
+              backgroundColor:[C.green, C.warn, C.teal, C.gold, '#60a5fa', '#d1d5db'],
+              borderColor:'#fff', borderWidth:2
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false, cutout:'58%',
+            plugins:{
+              legend:{ position:'bottom' },
+              datalabels:{
+                color:'#0f172a', formatter:(v,ctx)=>{
+                  const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                  const pct = (v/total*100).toFixed(0);
+                  return pct + '%';
+                },
+                font:{weight:'700'}
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
