@@ -11,48 +11,86 @@
 
 <style>
   :root{
-    --ahc-green:#0f7c66; --ahc-green-600:#0b6a57; --ahc-gold:#f4b000; --ahc-teal:#14b8a6;
-    --ahc-ink:#14222b; --ahc-body:#334155; --ahc-card:#fff; --ahc-bg:#f6f8fa; --ahc-soft:#e6eef0; --ahc-warn:#e04f5f;
-    --shadow-xl:0 18px 50px rgba(16,40,56,.12); --shadow-md:0 10px 24px rgba(16,40,56,.10);
+    /* Brand colors (green from your logo) */
+    --ahc-green:#8CC765;           /* extracted from logo */
+    --ahc-green-600:#74b34f;       /* darker for borders */
+    --ahc-gold:#f4b000;
+    --ahc-teal:#14b8a6;
+    --ahc-ink:#14222b;
+    --ahc-body:#334155;
+    --ahc-card:#fff;
+    --ahc-bg:#f6f8fa;
+    --ahc-soft:#e6eef0;
+    --ahc-warn:#e04f5f;
+    --shadow-xl:0 18px 50px rgba(16,40,56,.12);
+    --shadow-md:0 10px 24px rgba(16,40,56,.10);
     --r-lg:20px; --r-md:14px;
   }
   *{box-sizing:border-box} html,body{margin:0}
   body{
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
     color:var(--ahc-body);
-    background: radial-gradient(1200px 600px at 80% -100px, rgba(20,184,166,.10), transparent 60%),
-                radial-gradient(1200px 600px at -20% -200px, rgba(15,124,102,.10), transparent 60%),
-                var(--ahc-bg);
+    background:
+      radial-gradient(1200px 600px at 80% -100px, rgba(20,184,166,.10), transparent 60%),
+      radial-gradient(1200px 600px at -20% -200px, rgba(140,199,101,.12), transparent 60%),
+      var(--ahc-bg);
   }
-  .container{max-width:1200px; margin:0 auto; padding:28px 16px 80px}
-  .navbar{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background:linear-gradient(180deg,#0f7c66,#0b6a57); color:#fff; padding:14px 18px; border-radius:16px; box-shadow:var(--shadow-md)
-  }
-  .brand{display:flex; align-items:center; gap:10px; font-weight:700}
-  .dot{width:12px; height:12px; border-radius:999px; background:var(--ahc-gold); box-shadow:0 0 0 4px rgba(244,176,0,.25)}
-  .pill{background:rgba(255,255,255,.15); padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.25); font-size:13px}
+  .container{max-width:1200px; margin:0 auto; padding:24px 16px 80px}
 
-  /* Tabs */
+  /* Cute top bar */
+  .topbar{
+    background:#ffffff;
+    border:1px solid var(--ahc-soft);
+    border-radius:16px;
+    box-shadow:var(--shadow-md);
+    padding:10px 14px;
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand img{
+    width:34px; height:34px; object-fit:contain; display:block;
+    filter: drop-shadow(0 2px 6px rgba(140,199,101,.35));
+  }
+  .brand .title{
+    font-weight:800; color:var(--ahc-ink); letter-spacing:.2px;
+  }
+  .right-actions{
+    display:flex; align-items:center; gap:8px;
+  }
+  .badge{
+    background:linear-gradient(90deg,var(--ahc-green),var(--ahc-teal));
+    color:#fff; padding:8px 12px; border-radius:999px; font-size:13px; border:none;
+  }
+
+  /* Tabs, integrated under topbar */
   .tabs{
-    display:flex; gap:8px; margin:18px 2px 14px; flex-wrap:wrap
+    margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;
+    background:linear-gradient(180deg,#ffffff 0%, #f9fbfb 100%);
+    border:1px solid var(--ahc-soft); border-radius:12px; padding:8px; box-shadow:var(--shadow-md);
   }
   .tab-btn{
     appearance:none; border:none; background:#fff; color:var(--ahc-ink);
-    padding:10px 14px; border-radius:999px; cursor:pointer; border:1px solid var(--ahc-soft);
-    box-shadow:var(--shadow-md); font-weight:600; font-size:14px;
+    padding:10px 14px; border-radius:10px; cursor:pointer; border:1px solid var(--ahc-soft);
+    font-weight:600; font-size:14px;
   }
   .tab-btn[aria-selected="true"]{
-    background:linear-gradient(90deg,var(--ahc-green),var(--ahc-teal)); color:#fff; border-color:transparent;
+    background:linear-gradient(90deg,var(--ahc-green),var(--ahc-teal));
+    color:#fff; border-color:transparent;
   }
-  .panel{display:none}
-  .panel.active{display:block}
+
+  .panel{display:none} .panel.active{display:block}
+
+  /* Layout & cards */
   .hero{
-    display:grid; grid-template-columns: 1.2fr .8fr; gap:20px; margin:8px 0 22px
+    display:grid; grid-template-columns: 1.2fr .8fr; gap:20px; margin:16px 0 22px
   }
   .hero-card{
     background:linear-gradient(135deg,#fff 0%,#f9fbfb 70%); border:1px solid var(--ahc-soft);
-    border-radius:var(--r-lg); box-shadow:var(--shadow-xl); padding:32px
+    border-radius:var(--r-lg); box-shadow:var(--shadow-xl); padding:28px
   }
   .hero h1{margin:0 0 8px; font-size:32px; color:var(--ahc-ink)}
   .hero p{margin:0}
@@ -66,13 +104,11 @@
   .span-12{grid-column:span 12} .span-8{grid-column:span 8} .span-7{grid-column:span 7} .span-6{grid-column:span 6} .span-5{grid-column:span 5} .span-4{grid-column:span 4}
   h2{font-size:20px; color:var(--ahc-ink); margin:0 0 10px; border-bottom:2px solid var(--ahc-soft); padding-bottom:8px}
   .sub{font-size:14px; color:#5a6b75}
-  .progress{height:26px; background:#edf2f4; border-radius:999px; overflow:hidden; border:1px solid #e3eaed}
-  .bar{height:100%; display:flex; align-items:center; padding-left:10px; color:#fff; font-weight:700}
-  .bar--green{background:linear-gradient(90deg,var(--ahc-green) 0%,var(--ahc-green-600) 100%)}
-  .bar--gold{background:linear-gradient(90deg,#ffd36a 0%,var(--ahc-gold) 80%)}
-  .insight{background:linear-gradient(180deg,rgba(15,124,102,.06),rgba(15,124,102,.02)); border:1px solid var(--ahc-soft); border-left:4px solid var(--ahc-green); padding:14px; border-radius:12px; margin-top:10px}
+
+  .insight{background:linear-gradient(180deg,rgba(140,199,101,.10),rgba(140,199,101,.03)); border:1px solid var(--ahc-soft); border-left:4px solid var(--ahc-green); padding:14px; border-radius:12px; margin-top:10px}
   .highlight{background:linear-gradient(135deg,var(--ahc-green),var(--ahc-teal)); color:#fff; border-radius:16px; padding:16px 18px; box-shadow:var(--shadow-md)}
   .list{margin:0; padding-left:18px} .list li{margin:8px 0}
+
   canvas{width:100% !important; height:420px !important}
   .tall canvas{height:520px !important}
   @media (max-width:980px){
@@ -85,19 +121,28 @@
 </head>
 <body>
   <div class="container">
-    <nav class="navbar" role="navigation" aria-label="Breadcrumb">
-      <div class="brand"><span class="dot"></span><span>Africa Health Collaborative • Insights</span></div>
-      <div class="pill">Youth Employment, Workforce & Entrepreneurship</div>
-    </nav>
+    <!-- Top Navigation -->
+    <header class="topbar" role="banner">
+      <div class="nav-row">
+        <div class="brand">
+          <!-- Replace with your logo file in the same folder -->
+          <img src="logo-green.png" alt="AHC logo" />
+          <span class="title">Africa Health Collaborative • Insights</span>
+        </div>
+        <div class="right-actions">
+          <span class="badge">Youth Employment, Workforce & Entrepreneurship</span>
+        </div>
+      </div>
 
-    <!-- TABS -->
-    <div class="tabs" role="tablist" aria-label="Dashboard sections">
-      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-demo" id="tab-demo">Demographics</button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-emp" id="tab-emp">Employment & Skills</button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-career" id="tab-career">Careers & Gaps</button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-support" id="tab-support">Support & Systems</button>
-    </div>
+      <!-- Tabs under navbar -->
+      <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-demo" id="tab-demo">Demographics</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-emp" id="tab-emp">Employment & Skills</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-career" id="tab-career">Careers & Gaps</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-support" id="tab-support">Support & Systems</button>
+      </nav>
+    </header>
 
     <!-- OVERVIEW -->
     <section class="panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
@@ -124,23 +169,9 @@
     <section class="panel" id="panel-demo" role="tabpanel" aria-labelledby="tab-demo">
       <div class="grid">
         <div class="card span-12">
-          <h2>Top Higher Education Institutions</h2>
-          <p class="sub">Share of total respondents</p>
-          <div style="margin:12px 0">
-            <strong>KNUST</strong> <div class="progress"><div class="bar bar--green" style="width:24%">24%</div></div>
-          </div>
-          <div style="margin:12px 0">
-            <strong>Ashesi University</strong> <div class="progress"><div class="bar bar--green" style="width:19%">19%</div></div>
-          </div>
-          <div style="margin:12px 0">
-            <strong>Amref International University</strong> <div class="progress"><div class="bar bar--gold" style="width:16%">16%</div></div>
-          </div>
-          <div style="margin:12px 0">
-            <strong>University of Toronto</strong> <div class="progress"><div class="bar bar--gold" style="width:12%">12%</div></div>
-          </div>
-          <div style="margin:12px 0">
-            <strong>African Leadership University</strong> <div class="progress"><div class="bar bar--green" style="width:11%">11%</div></div>
-          </div>
+          <h2>Higher Education Institutions</h2>
+          <p class="sub">Share of total respondents, auto-balanced to 100% with “Others”</p>
+          <canvas id="institutionsPie"></canvas>
         </div>
       </div>
     </section>
@@ -214,7 +245,7 @@
           <div class="insight" style="margin-top:12px"><strong>97%</strong> show interest in entrepreneurship, but most lack practical launch support.</div>
         </div>
 
-        <div class="card span-12" style="background:linear-gradient(135deg,#0f7c66,#14b8a6); color:#fff">
+        <div class="card span-12" style="background:linear-gradient(135deg,var(--ahc-green),var(--ahc-teal)); color:#fff">
           <h2 style="border-bottom:0; color:#fff">The Path Forward</h2>
           <ul class="list">
             <li>Create transparent youth hiring pathways</li>
@@ -229,7 +260,7 @@
   </div>
 
 <script>
-  // Tab logic
+  // Tabs
   const tabs = Array.from(document.querySelectorAll('.tab-btn'));
   const panels = Array.from(document.querySelectorAll('.panel'));
   const initState = { overview:false, demo:false, emp:false, career:false, support:false };
@@ -237,17 +268,16 @@
   function showTab(id){
     panels.forEach(p => p.classList.toggle('active', p.id === id));
     tabs.forEach(t => t.setAttribute('aria-selected', t.getAttribute('aria-controls') === id ? 'true' : 'false'));
-    // lazy init charts for that panel
     if(id === 'panel-overview' && !initState.overview){ renderCountry(); initState.overview=true; }
-    if(id === 'panel-demo' && !initState.demo){ /* no charts here */ initState.demo=true; }
+    if(id === 'panel-demo' && !initState.demo){ renderInstitutionsPie(); initState.demo=true; }
     if(id === 'panel-emp' && !initState.emp){ renderEmployment(); renderSkills(); initState.emp=true; }
     if(id === 'panel-career' && !initState.career){ renderCareer(); renderSkillsGap(); initState.career=true; }
     if(id === 'panel-support' && !initState.support){ renderChanges(); initState.support=true; }
   }
   tabs.forEach(btn => btn.addEventListener('click', () => showTab(btn.getAttribute('aria-controls'))));
 
-  // Charts
-  let C; // colors
+  // Colors
+  let C;
   document.addEventListener('readystatechange', () => {
     if(document.readyState !== 'complete') return;
     const css = getComputedStyle(document.documentElement);
@@ -259,44 +289,127 @@
       warn: css.getPropertyValue('--ahc-warn').trim(),
     };
     Chart.register(ChartDataLabels);
-    // Render initial tab
     showTab('panel-overview');
   });
 
+  // Helpful palettes (multi-color)
+  const PALETTE = {
+    bars: ['#8CC765','#14b8a6','#60a5fa','#a855f7','#f59e0b','#ef4444','#06b6d4','#22c55e','#f472b6'],
+    soft: ['#a7e27f','#70d6cd','#9cc2ff','#caa6f9','#ffd36a','#f59aa4','#7bdff6','#9de7ac','#ffc0dc']
+  };
+
+  // Charts
   function renderCountry(){
     new Chart(document.getElementById('countryChart').getContext('2d'), {
       type:'bar',
-      data:{ labels:['Ghana','Kenya','Rwanda','South Africa','Canada','Ethiopia','Uganda','Nigeria','Others'],
-        datasets:[{ label:'Participants', data:[97,50,22,19,10,3,3,3,6],
-          backgroundColor:C.green, borderColor:C.green600, borderWidth:2, borderRadius:8 }]},
+      data:{
+        labels:['Ghana','Kenya','Rwanda','South Africa','Canada','Ethiopia','Uganda','Nigeria','Others'],
+        datasets:[{
+          label:'Participants',
+          data:[97,50,22,19,10,3,3,3,6],
+          backgroundColor: PALETTE.bars,           // different color per country
+          borderColor: '#ffffff',
+          borderWidth: 1.5,
+          borderRadius: 8
+        }]
+      },
       options:{
         responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false},
-          datalabels:{ color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'}, formatter:v=>v } },
-        scales:{ x:{ grid:{display:false}}, y:{ beginAtZero:true, ticks:{precision:0} } }
+        plugins:{
+          legend:{display:false},
+          datalabels:{ color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'}, formatter:v=>v },
+          tooltip:{enabled:true}
+        },
+        scales:{
+          x:{ grid:{display:false}},
+          y:{ beginAtZero:true, ticks:{ precision:0 } }
+        }
       }
     });
   }
 
-  function renderEmployment(){
-    new Chart(document.getElementById('employmentChart').getContext('2d'), {
-      type:'doughnut',
-      data:{ labels:['Full-time Student','Unemployed & Seeking','Contract Employment','Permanently Employed','Self Employed','Not Looking'],
-        datasets:[{ data:[116,39,32,16,6,4], backgroundColor:[C.green,C.warn,C.gold,C.teal,'#8ecae6','#facc15'], borderColor:'#fff', borderWidth:2 }]},
-      options:{ responsive:true, maintainAspectRatio:false, cutout:'58%',
-        plugins:{ legend:{position:'right'},
-          datalabels:{ color:'#0f172a', font:{weight:'700'},
-            formatter:(v,ctx)=>{ const tot = ctx.dataset.data.reduce((a,b)=>a+b,0); return Math.round(v/tot*100)+'%'; } } } }
+  // Institutions as pie that totals 100% (auto add Others)
+  function renderInstitutionsPie(){
+    const labels = ['KNUST','Ashesi University','Amref International University','University of Toronto','African Leadership University'];
+    const values = [24,19,16,12,11]; // given percentages
+    const sum = values.reduce((a,b)=>a+b,0);
+    const others = Math.max(0, 100 - sum);
+    const allLabels = others > 0 ? [...labels, 'Others'] : labels;
+    const allValues = others > 0 ? [...values, others] : values;
+
+    new Chart(document.getElementById('institutionsPie').getContext('2d'), {
+      type:'pie',
+      data:{
+        labels: allLabels,
+        datasets:[{
+          data: allValues,
+          backgroundColor: PALETTE.soft.slice(0, allLabels.length),
+          borderColor:'#fff', borderWidth:2
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{ position:'right' },
+          datalabels:{
+            color:'#0f172a', font:{weight:'700'},
+            formatter:(v,ctx)=>{
+              const tot = ctx.dataset.data.reduce((a,b)=>a+b,0);
+              return Math.round(v/tot*100) + '%';
+            }
+          }
+        }
+      }
     });
   }
 
+  // Employment doughnut with better spacing
+  function renderEmployment(){
+    new Chart(document.getElementById('employmentChart').getContext('2d'), {
+      type:'doughnut',
+      data:{
+        labels:['Full-time Student','Unemployed & Seeking','Contract Employment','Permanently Employed','Self Employed','Not Looking'],
+        datasets:[{
+          data:[116,39,32,16,6,4],
+          backgroundColor:[C.green, C.warn, '#f59e0b', C.teal, '#60a5fa', '#cbd5e1'],
+          borderColor:'#fff', borderWidth:2, hoverOffset:6
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        cutout:'52%',                                     // more space for segments
+        layout:{ padding:{top:8,bottom:8,left:8,right:8}},
+        plugins:{
+          legend:{ position:'bottom', labels:{ boxWidth:14, boxHeight:14 } },  // move legend bottom
+          datalabels:{
+            color:'#0f172a', font:{weight:'700'},
+            formatter:(v,ctx)=>{ const tot = ctx.dataset.data.reduce((a,b)=>a+b,0); return Math.round(v/tot*100)+'%'; }
+          }
+        }
+      }
+    });
+  }
+
+  // Skills – multicolor bars
   function renderSkills(){
     new Chart(document.getElementById('skillsChart').getContext('2d'), {
       type:'bar',
-      data:{ labels:['Critical Thinking','Technical Skills','Adaptability','Communication','Confidence'],
-        datasets:[{ label:'Responses', data:[105,43,22,18,15], backgroundColor:C.teal, borderColor:C.green600, borderWidth:2, borderRadius:8 }]},
-      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} } },
+      data:{
+        labels:['Critical Thinking','Technical Skills','Adaptability','Communication','Confidence'],
+        datasets:[{
+          label:'Responses',
+          data:[105,43,22,18,15],
+          backgroundColor: PALETTE.bars.slice(0,5),   // each bar different
+          borderColor:'#ffffff', borderWidth:1.5,
+          borderRadius:8
+        }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} }
+        },
         scales:{ x:{ beginAtZero:true } }
       }
     });
@@ -305,25 +418,45 @@
   function renderCareer(){
     new Chart(document.getElementById('careerChart').getContext('2d'), {
       type:'bar',
-      data:{ labels:['Public Health & Policy','Clinical Profession','Health Tech & Data','Allied Health','Admin & Management','Research & Academia','Entrepreneurship','Mental Health'],
-        datasets:[{ label:'Respondents', data:[43,33,31,19,14,14,10,9],
-          backgroundColor:[C.green,'#2563eb',C.teal,'#a855f7','#22c55e',C.warn,C.gold,'#06b6d4'],
-          borderWidth:0, borderRadius:10 }]},
-      options:{ responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, datalabels:{ color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'} } },
+      data:{
+        labels:['Public Health & Policy','Clinical Profession','Health Tech & Data','Allied Health','Admin & Management','Research & Academia','Entrepreneurship','Mental Health'],
+        datasets:[{
+          label:'Respondents',
+          data:[43,33,31,19,14,14,10,9],
+          backgroundColor:[...PALETTE.bars.slice(0,8)],
+          borderWidth:0, borderRadius:10
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          datalabels:{ color:'#0f172a', anchor:'end', align:'top', font:{weight:'700'} }
+        },
         scales:{ y:{ beginAtZero:true, ticks:{stepSize:5} }, x:{ grid:{display:false} } }
       }
     });
   }
 
+  // Skills Gap – multicolor bars
   function renderSkillsGap(){
     new Chart(document.getElementById('skillsGapChart').getContext('2d'), {
       type:'bar',
-      data:{ labels:['Specialized Doctors','Mental Health - Psychologists','Mental Health - Counsellors','Community Health Workers','Primary Care Doctors','IT / Digital Support','Health Information','Allied Health'],
-        datasets:[{ label:'Demand Level', data:[79,77,77,63,61,59,54,51],
-          backgroundColor:C.green, borderColor:C.green600, borderWidth:2, borderRadius:8 }]},
-      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} } },
+      data:{
+        labels:['Specialized Doctors','Mental Health - Psychologists','Mental Health - Counsellors','Community Health Workers','Primary Care Doctors','IT / Digital Support','Health Information','Allied Health'],
+        datasets:[{
+          label:'Demand Level',
+          data:[79,77,77,63,61,59,54,51],
+          backgroundColor: PALETTE.bars.slice(0,8),
+          borderColor:'#ffffff', borderWidth:1.5, borderRadius:8
+        }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          datalabels:{ color:'#0f172a', anchor:'end', align:'right', offset:6, font:{weight:'700'} }
+        },
         scales:{ x:{ beginAtZero:true } }
       }
     });
@@ -332,12 +465,24 @@
   function renderChanges(){
     new Chart(document.getElementById('changesChart').getContext('2d'), {
       type:'doughnut',
-      data:{ labels:['Innovation & Technology','Job Creation','Training & Skills','Funding Support','Inclusion & Equity','Other'],
-        datasets:[{ data:[50,34,29,7,7,25], backgroundColor:[C.green,C.warn,C.teal,C.gold,'#60a5fa','#d1d5db'], borderColor:'#fff', borderWidth:2 }]},
-      options:{ responsive:true, maintainAspectRatio:false, cutout:'58%',
-        plugins:{ legend:{position:'bottom'},
-          datalabels:{ color:'#0f172a', font:{weight:'700'},
-            formatter:(v,ctx)=>{ const tot = ctx.dataset.data.reduce((a,b)=>a+b,0); return Math.round(v/tot*100)+'%'; } } } }
+      data:{
+        labels:['Innovation & Technology','Job Creation','Training & Skills','Funding Support','Inclusion & Equity','Other'],
+        datasets:[{
+          data:[50,34,29,7,7,25],
+          backgroundColor:[C.green, C.warn, C.teal, '#f59e0b','#60a5fa','#d1d5db'],
+          borderColor:'#fff', borderWidth:2
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'58%',
+        plugins:{
+          legend:{position:'bottom'},
+          datalabels:{
+            color:'#0f172a', font:{weight:'700'},
+            formatter:(v,ctx)=>{ const tot = ctx.dataset.data.reduce((a,b)=>a+b,0); return Math.round(v/tot*100)+'%'; }
+          }
+        }
+      }
     });
   }
 </script>
